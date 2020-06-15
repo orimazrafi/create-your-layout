@@ -1,4 +1,9 @@
 import React from "react";
+import { PageHeadline } from "../../Elements/PageHeadline";
 export const Configuration = () => {
-  return <>Configuration</>;
+  return (
+    <>
+      <PageHeadline>Configuration</PageHeadline>
+    </>
+  );
 };
