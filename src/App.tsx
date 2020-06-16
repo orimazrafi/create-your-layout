@@ -4,6 +4,7 @@ import { Layouts } from "./Pages/Layouts/Layouts";
 import { Configuration } from "./Pages/Configuration/Configuration";
 import { Navbar } from "./Components/Navbar/Navbar";
 import { PagesWrapper } from "./Elements/PagesWrapper";
+import { NotFound } from "./Pages/NotFound/NotFound";
 import "./App.css";
 
 function App() {
@@ -13,12 +14,9 @@ function App() {
       <PagesWrapper>
         <Router>
           <Switch>
-            <Route path="/" exact component={Layouts}></Route>
-            <Route
-              path="/configuration"
-              exact
-              component={Configuration}
-            ></Route>
+            <Route path="/" exact component={Layouts} />
+            <Route path="/configuration" component={Configuration} />
+            <Route path="/" component={NotFound} />
           </Switch>
         </Router>
       </PagesWrapper>
