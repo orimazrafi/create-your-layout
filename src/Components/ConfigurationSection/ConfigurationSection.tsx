@@ -10,39 +10,46 @@ import {
   reduxSetGridLayout,
   reduxSetOnlyLayout,
 } from "../../Features/Layout/LayoutSlice";
+import {
+  swapPlaces,
+  resetRef,
+  setElement,
+  createDeepClone,
+  DRAGEND,
+} from "../../helpers";
+// eslint-disable-next-line
 const log = console.log;
 
 export const ConfigurationSection = () => {
   const history = useHistory();
-  const dragNode = useRef<any>();
-  const elementTo = useRef<any>();
-  const elementFrom = useRef<any>();
+  const dragNode: React.MutableRefObject<any> = useRef();
+  const elementTo: React.MutableRefObject<any> = useRef();
+  const elementFrom: React.MutableRefObject<any> = useRef<any>();
   const dispatch = useDispatch();
   const { layout, draggedIndex, components } = useSelector(
     (state: {
       layout: {
         layout: LayoutInterface[];
-        draggedIndex: any;
-        components: any;
+        draggedIndex: number;
+        components: string[];
       };
     }) => state.layout
   );
-  if (layout?.length < 1) history.push("/");
-  const handleDragEnter = (e: any, index: number) => {
-    setElement(elementTo, index);
-    log({ draggedIndex });
+  if (layout.length < 1) history.push("/");
+  const handleDragEnter = (index: number) => {
+    setElement(elementTo, index, layout);
     if (draggedIndex !== null) {
-      const componentsDuplicate = createDeepClone(components);
       const layoutDuplicate = createDeepClone(layout);
       layoutDuplicate[index].component = components[draggedIndex];
-      dispatch(reduxSetGridLayout(componentsDuplicate, layoutDuplicate));
+      dispatch(reduxSetGridLayout(layoutDuplicate));
     }
   };
-  const createDeepClone = (original: any) =>
-    JSON.parse(JSON.stringify(original));
 
-  const handleDragFromLayout = (e: any, index: any) => {
-    setElement(elementFrom, index);
+  const handleDragFromLayout = (
+    e: React.DragEvent<HTMLDivElement>,
+    index: number
+  ) => {
+    setElement(elementFrom, index, layout);
     addEventToRef(dragNode, e);
   };
 
@@ -53,56 +60,34 @@ export const ConfigurationSection = () => {
     dispatch(reduxSetOnlyLayout(layoutDuplicate));
     resetRef(elementTo, dragNode);
   };
-  const addEventToRef = (ref: any, e: any) => {
-    ref.current = e.target;
-    ref.current.addEventListener("dragend", handleDragEnd);
-  };
-  const removeEventToRef = (ref: any) => {
-    ref.current.removeEventListener("dragend", handleDragEnd);
-  };
-  const swapPlaces = (
-    layoutDuplicate: any,
-    elementTo: any,
-    elementFrom: any
+  const addEventToRef = (
+    ref: React.MutableRefObject<any>,
+    e: React.DragEvent<HTMLDivElement>
   ) => {
-    layoutDuplicate[elementTo.current.index].component =
-      elementFrom.current.content;
-    layoutDuplicate[elementFrom.current.index].component =
-      elementTo.current.content;
+    ref.current = e.target;
+    ref.current.addEventListener(DRAGEND, handleDragEnd);
   };
-  const setElement = (e: any, index: number) => {
-    e.current = {
-      index,
-      content: layout[index].component,
-    };
-  };
-
-  const resetRef = (e: any, e2: any) => {
-    e.current.index = null;
-    e.current.content = "";
-    e2.current = null;
+  const removeEventToRef = (ref: React.MutableRefObject<any>) => {
+    ref.current.removeEventListener(DRAGEND, handleDragEnd);
   };
 
   return (
-    <>
-      <ConfigurationWrapper>
-        <PageHeadline>Configuration</PageHeadline>
-        <Grid container spacing={3}>
-          {layout.length > 0 &&
-            layout.map((l: LayoutInterface, index: number) => (
-              <Grid item xs={l.width} key={index}>
-                <GridItem
-                  height={l.height}
-                  draggable
-                  onDragStart={(e) => handleDragFromLayout(e, index)}
-                  onDragEnter={(e) => handleDragEnter(e, index)}
-                >
-                  {l.component}
-                </GridItem>
-              </Grid>
-            ))}
-        </Grid>
-      </ConfigurationWrapper>
-    </>
+    <ConfigurationWrapper>
+      <PageHeadline>Configuration</PageHeadline>
+      <Grid container spacing={3}>
+        {layout.length > 0 &&
+          layout.map((l: LayoutInterface, index: number) => (
+            <Grid item xs={l.width} key={index}>
+              <GridItem
+                height={l.height}
+                color={l.component}
+                draggable
+                onDragStart={(e) => handleDragFromLayout(e, index)}
+                onDragEnter={() => handleDragEnter(index)}
+              ></GridItem>
+            </Grid>
+          ))}
+      </Grid>
+    </ConfigurationWrapper>
   );
 };

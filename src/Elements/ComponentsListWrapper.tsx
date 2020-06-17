@@ -3,7 +3,7 @@ const div = styled.div;
 
 export const ComponentsListWrapper = div`
   width: 100%;
-  height: 400px;
+  height: 500px;
   max-width: 200px;
   background-color: #fff;
   overflow: scroll;

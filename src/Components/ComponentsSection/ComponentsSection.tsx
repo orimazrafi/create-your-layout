@@ -7,7 +7,9 @@ import { ListItemContainer } from "../../Elements/ListItemContainer";
 import { useDispatch } from "react-redux";
 import { reduxSetDragComponent } from "../../Features/Layout/LayoutSlice";
 import { useSelector } from "react-redux";
+import { getStyles, DRAGEND } from "../../helpers";
 import "./ComponentsSection.css";
+
 // eslint-disable-next-line
 const log = console.log;
 export const ComponentsSection = () => {
@@ -15,22 +17,28 @@ export const ComponentsSection = () => {
     (state: { layout: { components: string[] } }) => state.layout
   );
   const dispatch = useDispatch();
-  const dragItem = useRef<number | null>();
-  const dragNode = useRef<any>();
-
+  const dragItem: React.MutableRefObject<any> = useRef();
+  const dragNode: React.MutableRefObject<any> = useRef();
   const [dragging, setDragging] = useState(false);
-  const handleDragStart = (e: any, index: number) => {
+
+  const handleDragStart = (
+    e: React.DragEvent<HTMLDivElement>,
+    index: number
+  ) => {
     dispatch(reduxSetDragComponent(index));
     dragItem.current = index;
     addEventRef(dragNode, e);
     setDragging(true);
   };
-  const addEventRef = (ref: any, e: any) => {
+  const addEventRef = (
+    ref: React.MutableRefObject<any>,
+    e: React.DragEvent<HTMLDivElement>
+  ) => {
     ref.current = e.target;
-    ref.current.addEventListener("dragend", handleDragEnd);
+    ref.current.addEventListener(DRAGEND, handleDragEnd);
   };
-  const removeEventToRef = (ref: any, ref2: any) => {
-    ref.current.removeEventListener("dragend", handleDragEnd);
+  const removeEventToRef = (ref: React.MutableRefObject<any>, ref2: any) => {
+    ref.current.removeEventListener(DRAGEND, handleDragEnd);
     ref.current = null;
     ref2.current = null;
   };
@@ -40,26 +48,20 @@ export const ComponentsSection = () => {
     dispatch(reduxSetDragComponent(null));
   };
 
-  const getStyles = (index: number) => {
-    let className = "drag-n-drop__item";
-    if (index === dragItem.current) className += " active";
-    return className;
-  };
   return (
     <ComponentsWrapper>
-      <PageHeadline>Components Section</PageHeadline>
+      <PageHeadline>Components</PageHeadline>
       <ComponentsListWrapper>
-        <List className="drag-n-drop">
+        <List>
           {components.map((component: string, index: number) => (
             <ListItemContainer
               button
-              className={dragging ? getStyles(index) : "drag-n-drop__item"}
+              color={component}
+              className={dragging ? getStyles(index, dragItem) : ""}
               key={index}
               draggable
               onDragStart={(e) => handleDragStart(e, index)}
-            >
-              <div className="drag-n-drop__component">{component}</div>
-            </ListItemContainer>
+            ></ListItemContainer>
           ))}
         </List>
       </ComponentsListWrapper>

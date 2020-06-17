@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { AppDispatch } from "../../Redux/store";
-import { LayoutInterface } from "../../interfaces";
-const layout1 = [
+import { FIRST } from "../../helpers";
+const firstLayout = [
   { width: 12, height: "50px", component: "" },
   { width: 6, height: "150px", component: "" },
   { width: 6, height: "150px", component: "" },
@@ -14,7 +14,7 @@ const layout1 = [
   { width: 3, height: "50px", component: "" },
   { width: 3, height: "50px", component: "" },
 ];
-const layout2 = [
+const secondLayout = [
   { width: 12, height: "50px", component: "" },
   { width: 6, height: "100px", component: "" },
   { width: 6, height: "100px", component: "" },
@@ -24,69 +24,47 @@ const layout2 = [
 const layout = createSlice({
   name: "layout",
   initialState: {
-    components: [1, 2, 3],
+    components: ["#00dcff", "#ff00a5", "#2ee82e", "#345234", "#b2b511"],
     layout: [],
-    layout1,
-    layout2,
+    firstLayout,
+    secondLayout,
     activeLayout: null,
     draggedIndex: null,
-    layoutDraggedContent: null,
   },
   reducers: {
-    setLayout: (state, action) => {
+    setActiveLayout: (state, action) => {
       state.layout = action.payload.layout;
       state.activeLayout = action.payload.activeLayout;
     },
-    setDraggedComponent: (state, action) => {
+    reduxSetDragComponent: (state, action) => {
       state.draggedIndex = action.payload;
     },
-    setGridLayout: (state, action) => {
-      state.components = action.payload.componentsDuplicate;
-      state.layout = action.payload.layout;
+    reduxSetGridLayout: (state, action) => {
+      state.layout = action.payload;
       state.draggedIndex = null;
     },
-    setLayoutDragged: (state, action) => {
-      state.layoutDraggedContent = action.payload;
-    },
-    setOnlyLayout: (state, action) => {
+
+    reduxSetOnlyLayout: (state, action) => {
       state.layout = action.payload;
     },
-    setLayoutLayout: (state, action) => {
+    reduxSetLayout: (state, action) => {
       state.layout = action.payload;
     },
   },
 });
 
 export const {
-  setLayout,
-  setDraggedComponent,
-  setGridLayout,
-  setLayoutDragged,
-  setOnlyLayout,
-  setLayoutLayout,
+  setActiveLayout,
+  reduxSetDragComponent,
+  reduxSetGridLayout,
+  reduxSetOnlyLayout,
+  reduxSetLayout,
 } = layout.actions;
 export default layout.reducer;
 
 export const reduxSetActiveLayout = (activeLayout: string) => (
   dispatch: AppDispatch
 ) => {
-  const layout = activeLayout === "first" ? layout1 : layout2;
-  dispatch(setLayout({ layout, activeLayout }));
-};
-
-export const reduxSetDragComponent = (index: number | null) => (
-  dispatch: AppDispatch
-) => {
-  dispatch(setDraggedComponent(index));
-};
-export const reduxSetGridLayout = (componentsDuplicate: any, layout: any) => (
-  dispatch: AppDispatch
-) => {
-  dispatch(setGridLayout({ componentsDuplicate, layout }));
-};
-export const reduxSetOnlyLayout = (layout: any) => (dispatch: AppDispatch) => {
-  dispatch(setOnlyLayout(layout));
-};
-export const reduxSetLayout = (layout: any) => (dispatch: AppDispatch) => {
-  dispatch(setLayoutLayout(layout));
+  const layout = activeLayout === FIRST ? firstLayout : secondLayout;
+  dispatch(setActiveLayout({ layout, activeLayout }));
 };
