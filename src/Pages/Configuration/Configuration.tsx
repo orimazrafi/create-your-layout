@@ -4,6 +4,7 @@ import { ConfigurationSection } from "../../Components/ConfigurationSection/Conf
 import { ComponentsSection } from "../../Components/ComponentsSection/ComponentsSection";
 // eslint-disable-next-line
 const log = console.log;
+
 export const Configuration = () => {
   return (
     <FlexboxWrapper>
