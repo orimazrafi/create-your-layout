@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { reduxSetDragComponent } from "../../Features/Layout/LayoutSlice";
 import { useSelector } from "react-redux";
 import { getStyles, DRAGEND } from "../../helpers";
+import { useDragEnd } from "../../Hooks/useDragEnd";
 import "./ComponentsSection.css";
 
 // eslint-disable-next-line
@@ -17,7 +18,7 @@ export const ComponentsSection = () => {
     (state: { layout: { components: string[] } }) => state.layout
   );
   const dispatch = useDispatch();
-  const dragItem: React.MutableRefObject<any> = useRef();
+  const dragIndex: React.MutableRefObject<any> = useRef();
   const dragNode: React.MutableRefObject<any> = useRef();
   const [dragging, setDragging] = useState(false);
 
@@ -26,7 +27,7 @@ export const ComponentsSection = () => {
     index: number
   ) => {
     dispatch(reduxSetDragComponent(index));
-    dragItem.current = index;
+    dragIndex.current = index;
     addEventRef(dragNode, e);
     setDragging(true);
   };
@@ -37,17 +38,12 @@ export const ComponentsSection = () => {
     ref.current = e.target;
     ref.current.addEventListener(DRAGEND, handleDragEnd);
   };
-  const removeEventToRef = (ref: React.MutableRefObject<any>, ref2: any) => {
+
+  const removeEventToRef = (ref: React.MutableRefObject<any>) => {
     ref.current.removeEventListener(DRAGEND, handleDragEnd);
-    ref.current = null;
-    ref2.current = null;
-  };
-  const handleDragEnd = () => {
-    setDragging(false);
-    removeEventToRef(dragNode, dragItem);
-    dispatch(reduxSetDragComponent(null));
   };
 
+  const { handleDragEnd } = useDragEnd(setDragging, removeEventToRef, dragNode);
   return (
     <ComponentsWrapper>
       <PageHeadline>Components</PageHeadline>
@@ -57,10 +53,12 @@ export const ComponentsSection = () => {
             <ListItemContainer
               button
               color={component}
-              className={dragging ? getStyles(index, dragItem) : ""}
+              className={dragging ? getStyles(index, dragIndex) : ""}
               key={index}
               draggable
               onDragStart={(e) => handleDragStart(e, index)}
+              // onDragOver={(e) => e.preventDefault()}
+              // onDrop={drop}
             ></ListItemContainer>
           ))}
         </List>

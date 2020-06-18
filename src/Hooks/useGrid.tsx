@@ -1,11 +1,15 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import {
-  reduxSetActiveLayout,
+  reduxSetActiveLayoutAndNumber,
   reduxSetLayout,
 } from "../Features/Layout/LayoutSlice";
 import { LayoutInterface } from "../interfaces";
-export const useGrid = (layoutNumber: string, otherLayoutNumber: string) => {
+import { add } from "../helpers";
+export const useGrid = (
+  layoutNumberThatWasClicked: string,
+  otherLayoutNumber: string
+) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { layout, activeLayout } = useSelector(
@@ -13,17 +17,17 @@ export const useGrid = (layoutNumber: string, otherLayoutNumber: string) => {
       state.layout
   );
   const handleGrid = () => {
-    if (!activeLayout) dispatch(reduxSetActiveLayout(layoutNumber));
-    if (activeLayout === layoutNumber) dispatch(reduxSetLayout(layout));
+    if (!activeLayout)
+      dispatch(reduxSetActiveLayoutAndNumber(layoutNumberThatWasClicked));
+    if (activeLayout === layoutNumberThatWasClicked)
+      dispatch(reduxSetLayout(layout));
     if (activeLayout === otherLayoutNumber) {
-      const addSum = (a: LayoutInterface | number | any, b: LayoutInterface) =>
-        (a += b.component ? 1 : 0);
-      const sum = [...layout].reduce(addSum, 0);
+      const numberOfColoredComponents = [...layout].reduce(add, 0);
       if (
-        !sum ||
+        !numberOfColoredComponents ||
         window.confirm(`this will erase your ${otherLayoutNumber} layout`)
       ) {
-        dispatch(reduxSetActiveLayout(layoutNumber));
+        dispatch(reduxSetActiveLayoutAndNumber(layoutNumberThatWasClicked));
       } else return;
     }
     history.push("/configuration");

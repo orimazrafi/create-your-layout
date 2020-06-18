@@ -5,7 +5,6 @@ import { Configuration } from "./Pages/Configuration/Configuration";
 import { Navbar } from "./Components/Navbar/Navbar";
 import { PagesWrapper } from "./Elements/PagesWrapper";
 import { NotFound } from "./Pages/NotFound/NotFound";
-import "./App.css";
 
 function App() {
   return (

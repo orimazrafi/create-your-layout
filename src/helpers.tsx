@@ -5,6 +5,8 @@ export const swapPlaces = (
   elementTo: React.MutableRefObject<any>,
   elementFrom: React.MutableRefObject<any>
 ) => {
+  if (elementTo.current.index === null || elementFrom.current.index === null)
+    return;
   layoutDuplicate[elementTo.current.index].component =
     elementFrom.current.content;
   layoutDuplicate[elementFrom.current.index].component =
@@ -18,7 +20,7 @@ export const resetRef = (
   e.current.content = "";
   e2.current = null;
 };
-export const setElement = (
+export const setDraggedElement = (
   e: React.MutableRefObject<any>,
   index: number,
   layout: any
@@ -38,7 +40,12 @@ export const getStyles = (
 };
 export const createDeepClone = (original: LayoutInterface[]) =>
   JSON.parse(JSON.stringify(original));
-
+export const add = (a: LayoutInterface | number | any, b: LayoutInterface) =>
+  (a += b.component ? 1 : 0);
 export const FIRST = "FIRST";
 export const SECOND = "SECOND";
 export const DRAGEND = "dragend";
+export const isElementDraggedFromHasColor = (e: React.MutableRefObject<any>) =>
+  e?.current?.content;
+export const isElementDraggedFromComponents = (draggedIndex: number) =>
+  draggedIndex !== null;

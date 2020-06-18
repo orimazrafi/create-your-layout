@@ -14,6 +14,7 @@ const firstLayout = [
   { width: 3, height: "50px", component: "" },
   { width: 3, height: "50px", component: "" },
 ];
+
 const secondLayout = [
   { width: 12, height: "50px", component: "" },
   { width: 6, height: "100px", component: "" },
@@ -32,7 +33,7 @@ const layout = createSlice({
     draggedIndex: null,
   },
   reducers: {
-    setActiveLayout: (state, action) => {
+    setActiveLayoutAndNumber: (state, action) => {
       state.layout = action.payload.layout;
       state.activeLayout = action.payload.activeLayout;
     },
@@ -43,10 +44,6 @@ const layout = createSlice({
       state.layout = action.payload;
       state.draggedIndex = null;
     },
-
-    reduxSetOnlyLayout: (state, action) => {
-      state.layout = action.payload;
-    },
     reduxSetLayout: (state, action) => {
       state.layout = action.payload;
     },
@@ -54,17 +51,16 @@ const layout = createSlice({
 });
 
 export const {
-  setActiveLayout,
+  setActiveLayoutAndNumber,
   reduxSetDragComponent,
   reduxSetGridLayout,
-  reduxSetOnlyLayout,
   reduxSetLayout,
 } = layout.actions;
 export default layout.reducer;
 
-export const reduxSetActiveLayout = (activeLayout: string) => (
+export const reduxSetActiveLayoutAndNumber = (activeLayout: string) => (
   dispatch: AppDispatch
 ) => {
   const layout = activeLayout === FIRST ? firstLayout : secondLayout;
-  dispatch(setActiveLayout({ layout, activeLayout }));
+  dispatch(setActiveLayoutAndNumber({ layout, activeLayout }));
 };
