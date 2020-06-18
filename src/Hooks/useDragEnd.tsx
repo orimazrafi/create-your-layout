@@ -2,9 +2,9 @@ import { useDispatch } from "react-redux";
 import { reduxSetDragComponent } from "../Features/Layout/LayoutSlice";
 
 export const useDragEnd = (
-  setDragging: any,
-  removeEventToRef: any,
-  dragNode: any
+  setDragging: React.Dispatch<React.SetStateAction<boolean>>,
+  removeEventToRef: (ref: React.MutableRefObject<any>) => void,
+  dragNode: React.MutableRefObject<any>
 ) => {
   const dispatch = useDispatch();
   const handleDragEnd = () => {

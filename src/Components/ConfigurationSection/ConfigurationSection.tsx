@@ -18,9 +18,9 @@ import {
   DRAGEND,
   isElementDraggedFromHasColor,
   isElementDraggedFromComponents,
+  draggedItemHaveNoColor,
+  layoutWasNotPicked,
 } from "../../helpers";
-// eslint-disable-next-line
-const log = console.log;
 
 export const ConfigurationSection = () => {
   const { layout, draggedIndex, components } = useSelector(
@@ -32,8 +32,9 @@ export const ConfigurationSection = () => {
       };
     }) => state.layout
   );
+
   const history = useHistory();
-  if (layout.length < 1) history.push("/");
+  if (layoutWasNotPicked(layout)) history.push("/");
 
   const dragNode: React.MutableRefObject<any> = useRef();
   const elementFrom: React.MutableRefObject<any> = useRef();
@@ -42,13 +43,14 @@ export const ConfigurationSection = () => {
     index: number
   ) => {
     setDraggedElement(elementFrom, index, layout);
-    addEventToRef(dragNode, e);
+    addEventToRef(dragNode, e, index);
   };
-
   const addEventToRef = (
     ref: React.MutableRefObject<any>,
-    e: React.DragEvent<HTMLDivElement>
+    e: React.DragEvent<HTMLDivElement>,
+    index: number
   ) => {
+    if (draggedItemHaveNoColor(layout[index])) return;
     ref.current = e.target;
     ref.current.addEventListener(DRAGEND, handleDragEnd);
   };
@@ -88,6 +90,7 @@ export const ConfigurationSection = () => {
       dispatch(reduxSetGridLayout(layoutDuplicate));
     }
   };
+
   const handleDragEnter = (index: number) => {
     if (
       isElementDraggedFromComponents(draggedIndex) ||
@@ -108,7 +111,10 @@ export const ConfigurationSection = () => {
                 draggable
                 onDragEnter={(e) => handleDragEnter(index)}
                 onDragStart={(e) => handleDragFromLayout(e, index)}
-                onDragOver={(e) => e.preventDefault()}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                }}
+                onDragLeave={(e) => setDraggedIntoIndexForHoverEffect(null)}
                 onDrop={(e) => handleDrop(index)}
                 className={
                   draggedIntoIndexForHoverEffect === index ? "hover" : ""

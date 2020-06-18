@@ -11,8 +11,6 @@ import { getStyles, DRAGEND } from "../../helpers";
 import { useDragEnd } from "../../Hooks/useDragEnd";
 import "./ComponentsSection.css";
 
-// eslint-disable-next-line
-const log = console.log;
 export const ComponentsSection = () => {
   const { components } = useSelector(
     (state: { layout: { components: string[] } }) => state.layout
@@ -57,8 +55,6 @@ export const ComponentsSection = () => {
               key={index}
               draggable
               onDragStart={(e) => handleDragStart(e, index)}
-              // onDragOver={(e) => e.preventDefault()}
-              // onDrop={drop}
             ></ListItemContainer>
           ))}
         </List>

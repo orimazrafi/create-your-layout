@@ -30,6 +30,10 @@ export const setDraggedElement = (
     content: layout[index].component,
   };
 };
+export const draggedItemHaveNoColor = (item: LayoutInterface) =>
+  !item.component;
+export const layoutWasNotPicked = (layout: LayoutInterface[] | []) =>
+  layout.length < 1;
 export const getStyles = (
   index: number,
   dragItem: React.MutableRefObject<any>
